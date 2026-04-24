@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physical Abacus / Visualization Practice</title>
+
+    <style>
+
+        header {
+    background: var(--dark);
+    color: white;
+    padding: 0.5rem 8%; /* Reduced padding for a slim header */
+    display: flex;
+    justify-content: space-between; /* Logo left, Nav right */
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+    height: 70px; /* Fixed height stops the logo from expanding the header */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.logo-container {
+    height: 100%; /* Stays within the 70px header */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.main-logo {
+    max-height: 50px; /* This is the "Magic Limit" - stops it from being huge */
+    width: auto;      /* Maintains aspect ratio */
+    display: block;
+    object-fit: contain;
+    border-radius: 5px; /* Optional: rounds the corners of your JPEG */
+}
+
+        /* 🔥 Better panel look */
+.panel{
+    background:#ffffff;
+    border-radius:16px;
+    border:2px solid #dcdcdc;
+    box-shadow:0 6px 14px rgba(0,0,0,0.08);
+}
+
+  .problem {
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    width: 100%;
+    min-width: 0;
+}
+
+.problem:hover{
+    transform:translateY(-3px);
+    box-shadow:0 6px 14px rgba(0,0,0,0.12);
+}
+
+/* 🔥 Answer input focus */
+.answer:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 5px rgba(99,102,241,0.5);
+}
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: Arial;
+            background: linear-gradient(to right, #eef2f3, #dde6ed);
+            padding:20px;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f3f6fb;
+            color: #123b73;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 10px;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .main-grid {
+            display: block;
+            padding: 10px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid #e0e6ed;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            
+        }
+
+        .panel-title {
+            font-size: 24px;
+            color: #1e293b;
+        }
+
+        .controls select,
+.controls button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 12px;
+}
+ .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+
+
+        /* QUESTIONS GRID */
+#questions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+
+.num {
+    font-size: 17px;
+    text-align: right;
+    font-weight: bold;
+}
+
+
+        .serial {
+            font-size: 12px;
+            font-weight: bold;
+            color: #64748b;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 8px;
+        }
+
+ .answer {
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 10px;
+}
+
+.result{
+    margin-top:6px;
+    font-weight:bold;
+}
+
+.correct{
+    background:#d9f7d9;
+    color:#2e7d32;
+}
+
+.wrong{
+    background:#ffd6d6;
+    color:#c62828;
+}
+@media (max-width: 400px) {
+    #questions {
+        grid-template-columns: 1fr;
+    }
+}
+
+    .page-title {
+    font-size: 20px;
+    padding: 10px;
+    line-height: 1.3;
+}
+
+    header {
+        padding: 0.5rem 5%;
+        height: 60px;
+    }
+
+    .main-logo {
+        max-height: 40px;
+    }
+
+    .panel {
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .controls select,
+    .controls button {
+        width: 100%;
+    }
+
+    .num {
+        font-size: 16px;
+    }
+
+    .answer {
+        font-size: 14px;
+        padding: 8px;
+        width: 100%;
+    }
+    .bottom-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bottom-actions button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 12px;
+}
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container" onclick="location.href='Home.html'">
+            <img src="logo.jpeg" alt="Viswam Abacus Logo" class="main-logo">
+        </div>
+    </header>
+
+<div class="container">
+    <h1 class="page-title">Physical Abacus / Visualization Practice</h1>
+</div>
+
+<div class="main-grid">
+    <div class="panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+            <div class="panel-title">Exercise Sheet</div>
+            <button onclick="location.href='Home.html'" 
+        style="background: #123b73; color: white; border: none; font-weight: bold;">
+        🏠 Home
+    </button>
+            
+            <div class="controls">
+                
+                <select id="category" onchange="updateLevels()">
+                    <option value="">Select Category</option>
+                    <option value="star">Star Junior</option>
+                    <option value="junior">Juniors</option>
+                    <option value="senior">Seniors</option>
+                </select>
+
+                <select id="level" onchange="generateQuestions()">
+                    <option value="">Select Level</option>
+                </select>
+                
+                <button onclick="generateQuestions()" style="background: #2ecc71; color: white; border: none; font-weight: bold;">New Set</button>
+            </div>
+        </div>
+
+        <div id="questions">
+            <p style="text-align: center; grid-column: 1/-1; color: #94a3b8; padding: 40px;">
+                Please select a Category and Level to load questions.
+            </p>
+        </div>
+
+        <div class="bottom-actions">
+    <button onclick="checkAnswers()" style="background:#f39c12;color:white;border:none;font-weight:bold;">
+        Check Answers
+    </button>
+    <button onclick="resetAnswers()" style="background:#95a5a6;color:white;border:none;font-weight:bold;">
+        Clear Answers
+    </button>
+</div>
+    </div>
+</div>
+
+<script>
+if (!localStorage.getItem("testStarted")) {
+    localStorage.removeItem("resultSaved");
+    localStorage.setItem("testStarted", "true");
+}
+</script>
+
+<script>
+
+/* ---------------- UPDATE LEVELS ---------------- */
+function updateLevels(){
+
+    let category = document.getElementById("category").value;
+    let level = document.getElementById("level");
+
+    level.innerHTML = "<option value=''>Level</option>";
+
+    let levels = [];
+
+    if(category === "star"){
+    levels = [
+        "Level 1 (Direct Addition)",
+        "Level 2 (Direct Add & Sub)",
+        "Level 3 (5's complement Addition)",
+        "Level 4 (5's complement Add & Sub)"
+    ];
+}
+else if(category === "junior"){
+    levels = [
+        "Level 1 (Direct, 5's complement Add & Sub)",
+        "Level 2 (10's complement Add & Sub)",
+        "Level 3 (Mixed complement Add & Sub)",
+        "Level 4 (Mastering up to 4 Rows)"
+    ];
+}
+else if(category === "senior"){
+    levels = [
+        "Level 1 (Direct, 5's & 10's complement)",
+        "Level 2 (Mixed complement)",
+        "Level 3 (Mastering)",
+        "Level 4 (Mastering + Multiplication)",
+        "Level 5 (Division)",
+        "Level 6 (Decimal)",
+        "Level 7 (Decimal Multiplication)",
+        "Level 8 (BODMAS)",
+        "Level 9 (Square Roots & Percent)",
+        "Level 10 (Final level)",
+    ];
+}
+
+    for(let i=0;i<levels.length;i++){
+        let option=document.createElement("option");
+        option.value=i+1;
+        option.text=levels[i];
+        level.appendChild(option);
+    }
+}
+
+/* ---------------- OPERATION TYPES ---------------- */
+const OPERATIONS = {
+
+DIRECT_ADD:"direct_add",
+DIRECT_SUB:"direct_sub",
+
+FIVE_ADD:"5add",
+FIVE_SUB:"5sub",
+
+TEN_ADD:"10add",
+TEN_SUB:"10sub",
+
+MIX_ADD:"mixadd",
+MIX_SUB:"mixsub",
+
+MASTERING:"mastering",
+
+MULTIPLY:"multiply",
+DIVIDE:"divide",
+
+DECIMAL:"decimal",
+DECIMALMUL:"decimalmul",
+DECIMALDIVI:"decimaldivi",
+
+BODMAS:"bodmas",
+SQRT:"sqrt",
+PERCENT:"percent",
+
+RANDOM:"random"
+
+};
+/* ---------------- RULE TABLES ---------------- */
+const directAdd={1:[1,2,3,5,6,7,8],2:[1,2,5,6,7],3:[1,5,6],4:[5],5:[1,2,3,4],6:[1,2,3],7:[1,2],8:[1]};
+const directSub={1:[1],2:[1,2],3:[1,2,3],4:[1,2,3,4],5:[5],6:[1,5,6],7:[1,2,5,6,7],8:[1,2,3,5,6,7,8],9:[1,2,3,4,5,6,7,8,9]};
+const fiveAdd={1:[4],2:[3,4],3:[2,3,4],4:[1,2,3,4]};
+const fiveSub={5:[1,2,3,4],6:[2,3,4],7:[3,4],8:[4]};
+const tenAdd={1:[9],2:[8,9],3:[7,8,9],4:[6,7,8,9],5:[5],6:[4,5,9],7:[3,4,5,8,9],8:[2,3,4,5,7,8,9],9:[1,2,3,4,5,6,7,8,9]};
+const tenSub={0:[1,2,3,4,5,6,7,8,9],1:[2,3,4,5,7,8,9],2:[3,4,5,9],3:[4,5,9],4:[5],5:[6,7,8,9],6:[7,8,9],7:[8,9],8:[9]};
+const mixAdd={5:[6,7,8,9],6:[6,7,8],7:[6,7],8:[6]};
+const mixSub={1:[6],2:[6,7],3:[6,7,8],4:[6,7,8,9]};
+
+/* ---------------- UTIL ---------------- */
+function rand(arr){
+    if(!arr || arr.length === 0) return null;
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function topicOperation(topic){
+    if([
+        OPERATIONS.DIRECT_ADD,
+        OPERATIONS.FIVE_ADD,
+        OPERATIONS.TEN_ADD,
+        OPERATIONS.MIX_ADD
+    ].includes(topic)) return "+";
+
+    return "-";
+}
+
+/* ---------------- DIGIT LOGIC ---------------- */
+function onesDigit(current,topic){
+    if(topic===OPERATIONS.DIRECT_ADD) return rand(directAdd[current]||[]);
+    if(topic===OPERATIONS.DIRECT_SUB) return rand(directSub[current]||[]);
+    if(topic===OPERATIONS.FIVE_ADD) return rand(fiveAdd[current]||[]);
+    if(topic===OPERATIONS.FIVE_SUB) return rand(fiveSub[current]||[]);
+    if(topic===OPERATIONS.TEN_ADD) return rand(tenAdd[current]||[]);
+    if(topic===OPERATIONS.TEN_SUB) return rand(tenSub[current]||[]);
+    if(topic===OPERATIONS.MIX_ADD) return rand(mixAdd[current]||[]);
+    if(topic===OPERATIONS.MIX_SUB) return rand(mixSub[current]||[]);
+    return null;
+}
+
+function tensDigit(current, op){
+
+    let options = op === "+" ? directAdd[current] : directSub[current];
+
+    if(!options || options.length === 0){
+        return rand([1,2,3,4]); // fallback
+    }
+
+    options = options.filter(n => n <= 5);
+
+    if(options.length === 0){
+        return rand([1,2,3,4]); // fallback
+    }
+
+    return rand(options);
+}
+
+/* ---------------- LEVEL TOPICS ---------------- */
+function levelTopics(category,level){
+
+    if(category==="star"){
+        if(level==1) return [OPERATIONS.DIRECT_ADD];
+        if(level==2) return [OPERATIONS.DIRECT_ADD,OPERATIONS.DIRECT_SUB];
+        if(level==3) return [OPERATIONS.DIRECT_ADD,OPERATIONS.DIRECT_SUB,OPERATIONS.FIVE_ADD];
+        if(level==4) return [OPERATIONS.FIVE_ADD,OPERATIONS.FIVE_SUB];
+    }
+
+    if(category==="junior"){
+        if(level==1) return [OPERATIONS.FIVE_ADD,OPERATIONS.FIVE_SUB];
+        if(level==2) return [OPERATIONS.TEN_ADD,OPERATIONS.TEN_SUB];
+        if(level==3) return [OPERATIONS.MIX_ADD,OPERATIONS.MIX_SUB];
+        if(level==4) return [OPERATIONS.RANDOM];
+    }
+
+    if(category==="senior"){
+if(level==1) return [OPERATIONS.FIVE_ADD,OPERATIONS.FIVE_SUB,OPERATIONS.TEN_ADD,OPERATIONS.TEN_SUB];
+if(level==2) return [OPERATIONS.FIVE_ADD,OPERATIONS.FIVE_SUB,OPERATIONS.TEN_ADD,OPERATIONS.TEN_SUB,OPERATIONS.MIX_ADD,OPERATIONS.MIX_SUB];
+if(level==3) return [OPERATIONS.MASTERING];
+if(level==4) return [OPERATIONS.MASTERING, OPERATIONS.MULTIPLY];
+if(level==5) return [OPERATIONS.MASTERING, OPERATIONS.MULTIPLY, OPERATIONS.DIVIDE];
+if(level==6) return [OPERATIONS.MASTERING, OPERATIONS.MULTIPLY, OPERATIONS.DIVIDE, OPERATIONS.DECIMAL];
+if(level==7) return [ OPERATIONS.MASTERING, OPERATIONS.MULTIPLY, OPERATIONS.DECIMAL, OPERATIONS.DECIMALMUL ];
+if(level==8) return [OPERATIONS.DECIMALMUL,OPERATIONS.DECIMALDIVI, OPERATIONS.MULTIPLY, OPERATIONS.DIVIDE, OPERATIONS.BODMAS];
+if(level==9) return [OPERATIONS.MULTIPLY, OPERATIONS.DIVIDE, OPERATIONS.BODMAS, OPERATIONS.SQRT, OPERATIONS.PERCENT];
+if(level==10) return [OPERATIONS.MULTIPLY, OPERATIONS.DIVIDE, OPERATIONS.DECIMAL, OPERATIONS.DECIMALMUL, OPERATIONS.DECIMALDIVI, OPERATIONS.BODMAS, OPERATIONS.SQRT, OPERATIONS.PERCENT ];
+}
+    return [OPERATIONS.DIRECT_ADD];
+}
+
+/* ---------------- RANDOM ---------------- */
+function resolveRandomTopic(){
+    const weighted = [
+        OPERATIONS.DIRECT_ADD,
+        OPERATIONS.DIRECT_SUB,
+        OPERATIONS.FIVE_ADD,
+        OPERATIONS.FIVE_SUB,
+        OPERATIONS.TEN_ADD,
+        OPERATIONS.TEN_SUB,
+        OPERATIONS.MIX_ADD
+    ];
+    return Math.random()<0.2 ? OPERATIONS.MIX_SUB : rand(weighted);
+}
+
+function buildMastering(rows){
+
+let start = Math.floor(Math.random()*80)+20;
+
+let numbers=[start];
+let ops=[];
+let total=start;
+
+let curTens=Math.floor(start/10);
+let curOnes=start%10;
+
+for(let r=1;r<rows;r++){
+
+let op=Math.random()<0.5?"+":"-";
+
+let ones=Math.floor(Math.random()*10);
+let tens=Math.floor(Math.random()*5)+1;
+
+let num=tens*10+ones;
+
+if(op==="-" && total-num<0){
+op="+";
+}
+
+let onesCalc = op==="+" ? curOnes+ones : curOnes-ones;
+let carry=0;
+
+if(onesCalc>=10){
+carry=1;
+onesCalc-=10;
+}
+else if(onesCalc<0){
+carry=-1;
+onesCalc+=10;
+}
+
+let tensCalc = op==="+" ? curTens+tens+carry : curTens-tens+carry;
+
+/* prevent negative tens */
+if(tensCalc<0 || tensCalc>9){
+r--;
+continue;
+}
+
+total = op==="+" ? total+num : total-num;
+
+curOnes=onesCalc;
+curTens=tensCalc;
+
+numbers.push(num);
+ops.push(op);
+
+}
+
+return {
+numbers:numbers,
+ops:ops,
+total:total,
+type:"mastering"
+};
+
+}
+
+/* ---------------- MULTIPLICATION PROBLEM ---------------- */
+
+function buildMultiplication(){
+
+    // ✅ Only allow 2 to 4 digits
+    let digits = Math.floor(Math.random() * 3) + 2; // 2, 3, 4
+
+    let min = Math.pow(10, digits - 1);  // 10, 100, 1000
+    let max = Math.pow(10, digits) - 1;  // 99, 999, 9999
+
+    let num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    // ✅ single digit (2–9 ONLY)
+    let num2 = Math.floor(Math.random() * 8) + 2;
+
+    return {
+        numbers: [num1, num2],
+        ops: ["×"],
+        total: num1 * num2,
+        type: "mul"
+    };
+}
+
+function buildDivision(){
+
+let quotient = Math.floor(Math.random()*90)+10;
+let divisor = Math.floor(Math.random()*8)+2;
+
+let dividend = quotient * divisor;
+
+return{
+numbers:[dividend,divisor],
+ops:["÷"],
+total:quotient,
+type:"divi"
+};
+
+}
+
+function buildDecimal(){
+
+let n1 = parseFloat((Math.random()*50+10).toFixed(1));
+let n2 = parseFloat((Math.random()*40+5).toFixed(1));
+
+return{
+numbers:[n1,n2],
+ops:["+"],
+total:parseFloat((n1+n2).toFixed(1)),
+type:"decimal"
+};
+
+}
+
+function buildDecimalmul(){
+
+let n1=parseFloat((Math.random()*50+10).toFixed(1));
+let n2=Math.floor(Math.random()*8)+2;
+
+return{
+numbers:[n1,n2],
+ops:["×"],
+total:parseFloat((n1*n2).toFixed(1)),
+type:"decimalmul"
+};
+
+}
+
+function buildDecimaldivi(){
+
+let n1=parseFloat((Math.random()*50+10).toFixed(1));
+let n2=Math.floor(Math.random()*8)+2;
+
+return{
+numbers:[n1,n2],
+ops:["÷"],
+total:parseFloat((n1/n2).toFixed(1)),
+type:"decimaldivi"
+};
+
+}
+
+function buildBodmas(){
+
+let a = Math.floor(Math.random()*14)+2;
+let b = Math.floor(Math.random()*14)+2;
+
+let op1 = Math.random()<0.5?"+":"-";
+
+if(op1==="-" && a<b){
+[a,b]=[b,a];
+}
+
+let bracketValue = op1==="+" ? a+b : a-b;
+
+let op2 = Math.random()<0.5?"×":"÷";
+
+let c;
+
+if(op2==="÷"){
+
+let divisors=[];
+
+for(let i=2;i<=10;i++){
+if(bracketValue % i ===0){
+divisors.push(i);
+}
+}
+
+if(divisors.length===0){
+op2="×";
+c=Math.floor(Math.random()*4)+2;
+}
+else{
+c=divisors[Math.floor(Math.random()*divisors.length)];
+}
+
+}else{
+
+c=Math.floor(Math.random()*4)+2;
+
+}
+
+let total = op2==="×" ? bracketValue*c : bracketValue/c;
+
+return{
+numbers:[a,b,c],
+ops:[op1,op2],
+total:total,
+type:"bodmas"
+};
+
+}
+
+function buildSqrt(){
+
+let squares=[];
+
+for(let i=1;i<=31;i++){
+squares.push(i*i);
+}
+
+let num=rand(squares);
+
+return{
+numbers:[num],
+ops:["√"],
+total:Math.sqrt(num),
+type:"sqrt"
+};
+
+}
+
+function buildPercent(){
+
+let percent = rand([10,20,25,50,75]);
+
+let base = (Math.floor(Math.random()*9)+1)*40;
+
+return{
+numbers:[percent,base],
+ops:["% of"],
+total:(percent/100)*base,
+type:"percent"
+};
+
+}
+
+/* ---------------- BUILD PROBLEM ---------------- */
+function buildProblem(rows,topics){
+
+    let attempts = 0;
+    
+    while(attempts < 100){
+
+        attempts++;
+
+        let tens=Math.floor(Math.random()*8)+1;
+        let ones=Math.floor(Math.random()*9)+1;
+
+        let curOnes=ones;
+        let curTens=tens;
+
+        let numbers=[tens*10+ones];
+        let ops=[];
+        let total=numbers[0];
+
+        let valid=true;
+
+        for(let r=1;r<rows;r++){
+
+            let topic = rand(topics);
+
+            if(topic === OPERATIONS.RANDOM){
+                topic = resolveRandomTopic();
+            }
+
+            let op=topicOperation(topic);
+
+            let o=onesDigit(curOnes,topic);
+            let t=tensDigit(curTens,op);
+
+            if(o==null||t==null){
+                valid=false;
+                break;
+            }
+
+            let num=t*10+o;
+
+            if(op === "+"){
+                total += num;
+            }else{
+                total -= num;
+                if(total < 0){
+                    valid=false;
+                    break;
+                }
+            }
+
+            let onesCalc = op === "+" ? curOnes + o : curOnes - o;
+            let carry = 0;
+
+            if(onesCalc >= 10){
+                carry = 1;
+                onesCalc -= 10;
+            }
+            else if(onesCalc < 0){
+                carry = -1;
+                onesCalc += 10;
+            }
+
+            let tensCalc = op === "+" ? curTens + t + carry : curTens - t + carry;
+
+            if(tensCalc > 9 || tensCalc < 0){
+                valid=false;
+                break;
+            }
+
+            curOnes = onesCalc;
+            curTens = tensCalc;
+
+            numbers.push(num);
+            ops.push(op);
+        }
+
+        if(valid) return {numbers,ops,total};
+    }
+
+    throw new Error("Failed to generate");
+}
+
+/* ---------------- MAIN ---------------- */
+let answers=[];
+
+function generateQuestions(){
+
+    localStorage.removeItem("problems");
+localStorage.removeItem("answers");
+localStorage.removeItem("userAnswers");
+localStorage.removeItem("score");
+
+    let problems = [];
+    let category = document.getElementById("category").value;
+    let level = parseInt(document.getElementById("level").value);
+    let box = document.getElementById("questions");
+
+    if(!category || !level){
+        alert("Please select Category and Level");
+        return;
+    }
+
+    let topics = levelTopics(category, level);
+
+    box.innerHTML = "";
+    answers = [];
+
+    for(let q=1; q<=25; q++){
+
+        let p = null;
+        let attempts = 0;
+
+        while(attempts < 100){
+
+            try{
+
+                let topic = rand(topics);
+
+                let rows;
+                if(q<=5) rows=2;
+                else if(q<=15) rows=3;
+                else rows=4;
+
+                if(topic===OPERATIONS.MASTERING){
+                    p = buildMastering(rows);
+                }
+                else if(topic===OPERATIONS.MULTIPLY){
+                    p = buildMultiplication();
+                }
+                else if(topic===OPERATIONS.DIVIDE){
+                    p = buildDivision();
+                }
+                else if(topic===OPERATIONS.DECIMAL){
+                    p = buildDecimal();
+                }
+                else if(topic===OPERATIONS.DECIMALMUL){
+                    p = buildDecimalmul();
+                }
+                else if(topic===OPERATIONS.DECIMALDIVI){
+                    p = buildDecimaldivi();
+                }
+                else if(topic===OPERATIONS.BODMAS){
+                    p = buildBodmas();
+                }
+                else if(topic===OPERATIONS.SQRT){
+                    p = buildSqrt();
+                }
+                else if(topic===OPERATIONS.PERCENT){
+                    p = buildPercent();
+                }
+                else{
+                    p = buildProblem(rows, topics);
+                }
+
+                if(p) break;
+
+            }catch(e){}
+
+            attempts++;
+        }
+
+        if(!p){
+            console.warn("Failed to generate question", q);
+            continue;
+        }
+
+        answers.push(p.total);
+        problems.push(p); 
+
+        let wrap=document.createElement("div");
+        wrap.className="problem";
+
+        let html=`<div class="serial">Q${q}</div>`;
+
+        if(p.type==="mul"){
+
+            html+=`<div class="num">${p.numbers[0]}</div>`;
+            html+=`<div class="num">× ${p.numbers[1]}</div>`;
+
+        }
+        else if(p.type==="divi"){
+
+            html+=`<div class="num">${p.numbers[0]}</div>`;
+            html+=`<div class="num">÷ ${p.numbers[1]}</div>`;
+
+        }
+        else if(p.type==="decimal"){
+
+            html+=`<div class="num">${p.numbers[0].toFixed(1)}</div>`;
+            html+=`<div class="num">+ ${p.numbers[1].toFixed(1)}</div>`;
+
+        }
+        else if(p.type==="decimalmul"){
+
+            html+=`<div class="num">${p.numbers[0].toFixed(1)} × ${p.numbers[1]}</div>`;
+
+        }
+        else if(p.type==="decimaldivi"){
+
+            html+=`<div class="num">${p.numbers[0].toFixed(1)} ÷ ${p.numbers[1]}</div>`;
+
+        }
+        else if(p.type==="bodmas"){
+
+            html+=`<div class="num">(${p.numbers[0]} ${p.ops[0]} ${p.numbers[1]}) ${p.ops[1]} ${p.numbers[2]}</div>`;
+
+        }
+        else if(p.type==="sqrt"){
+
+            html+=`<div class="num">√ ${p.numbers[0]}</div>`;
+
+        }
+        else if(p.type==="percent"){
+
+            html+=`<div class="num">${p.numbers[0]} % of ${p.numbers[1]}</div>`;
+
+        }
+        else{
+
+            html+=`<div class="num">${p.numbers[0]}</div>`;
+
+            for(let i=0;i<p.ops.length;i++){
+                html+=`<div class="num">${p.ops[i]}${p.numbers[i+1]}</div>`;
+            }
+
+        }
+
+        html+=`<input type="number" class="answer">`;
+        html+=`<div class="result"></div>`;
+
+        wrap.innerHTML = html;
+        box.appendChild(wrap);
+    }
+
+    localStorage.setItem("problems", JSON.stringify(problems));
+localStorage.setItem("answers", JSON.stringify(answers));
+}
+
+/* ---------------- CHECK ---------------- */
+function checkAnswers(){
+
+    let inputs = document.querySelectorAll(".answer");
+
+    let userAnswers = [];
+    let score = 0;
+
+    inputs.forEach((input,index)=>{
+
+        let val = parseFloat(input.value);
+        userAnswers.push(val);
+
+        if(!isNaN(val) && Math.abs(val - answers[index]) < 0.01){
+            score++;
+        }
+    });
+
+    if(userAnswers.every(v => isNaN(v))){
+        alert("Please answer at least one question");
+        return;
+    }
+
+    // STORE
+    localStorage.setItem("userAnswers", JSON.stringify(userAnswers));
+    localStorage.setItem("score", score);
+
+    localStorage.setItem("category", document.getElementById("category").value);
+    localStorage.setItem("level", document.getElementById("level").value);
+
+    // 🔥 MODE HANDLING (IMPORTANT)
+    localStorage.setItem("mode", "physical-practice");
+
+    // REDIRECT
+    window.location.href = "results.html";
+}
+
+/* ---------------- RESET ---------------- */
+function resetAnswers(){
+    document.querySelectorAll(".answer").forEach(i=>i.value="");
+    document.querySelectorAll(".result").forEach(i=>{
+        i.innerHTML="";
+        i.className="result";
+    });
+}
+
+</script>
+
+</body>
+</html>

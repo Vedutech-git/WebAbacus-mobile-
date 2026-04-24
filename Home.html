@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viswam Abacus - Home</title>
+    <style>
+        :root {
+            --primary: #4facfe;
+            --secondary: #2ecc71;
+            --dark: #1e293b;
+            --light-bg: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            background-color: var(--light-bg);
+            scroll-behavior: smooth;
+            overflow-x:hidden;
+        }
+
+        /* --- HEADER & NAV FIX --- */
+       /* --- HEADER STABILITY --- */
+header {
+    background: var(--dark);
+    color: white;
+    padding: 0.5rem 8%; /* Reduced padding for a slim header */
+    display: flex;
+    justify-content: space-between; /* Logo left, Nav right */
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+    height: 70px; /* Fixed height stops the logo from expanding the header */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.logo-container {
+    height: 100%; /* Stays within the 70px header */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.main-logo {
+    max-height: 50px; /* This is the "Magic Limit" - stops it from being huge */
+    width: auto;      /* Maintains aspect ratio */
+    display: block;
+    object-fit: contain;
+    border-radius: 5px; /* Optional: rounds the corners of your JPEG */
+}
+
+nav {
+    display: flex;
+    align-items: center;
+}
+
+        nav a {
+            color: #cbd5e1;
+            margin-left: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover { color: var(--primary); }
+
+        /* Dropdown Fix */
+       /* --- STYLISH DROPDOWN --- */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 25px;
+}
+
+/* The "Practice With" Trigger */
+.dropdown > a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown:hover > a {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* The Menu Box */
+.dropdown-content {
+    display: block;
+    position: absolute;
+    top: 120%; /* Space for animation */
+    left: 0;
+    min-width: 240px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    padding: 12px 0;
+    z-index: 10001;
+    
+    /* Animation Start State */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Show State */
+.dropdown:hover .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Dropdown Links */
+.dropdown-content a {
+    color: var(--dark) !important;
+    padding: 14px 20px;
+    margin: 4px 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent; /* Hidden accent */
+}
+
+.dropdown-content a:hover {
+    background: #f1f5f9;
+    color: var(--primary) !important;
+    border-left: 4px solid var(--primary); /* Stylish blue accent */
+    transform: translateX(5px); /* Subtle slide effect */
+}
+        .dropdown:hover .dropdown-content { display: block; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(-45deg, #4facfe, #00f2fe, #2ecc71, #26de81);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            text-align: center;
+            padding: 120px 20px;
+            clip-path: ellipse(150% 100% at 50% 0%);
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero h1 { font-size: 3.2rem; margin-bottom: 15px; font-weight: 800; }
+        .hero p { max-width: 600px; margin: 0 auto 40px; font-size: 1.1rem; opacity: 0.9; }
+
+        .hero-action-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn,
+        .know-abacus-btn{
+            align-self: center;
+            width:75%;
+            max-width:100%;
+           text-align:center;
+        }   
+
+        .know-abacus-btn {
+            padding: 16px 40px;
+            background: white;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .know-abacus-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .vertical-divider { width: 2px; height: 50px; background: rgba(255, 255, 255, 0.3); }
+        .right-actions { display: flex; gap: 15px; }
+
+        .action-btn {
+            padding: 14px 30px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .action-btn:hover { background: white; color: #0081ff; transform: translateY(-1px); }
+
+        /* --- BENEFITS SECTION --- */
+        .benefits-section { padding: 80px 8%; text-align: center; background: white; }
+        .benefits-grid { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin-top: 40px; }
+        .benefit-card {
+            background: var(--light-bg);
+            padding: 40px 25px;
+            border-radius: 24px;
+            width: 250px;
+            border: 1px solid #edf2f7;
+            transition: 0.4s;
+        }
+        .benefit-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+
+        /* --- FEEDBACK SECTION --- */
+        .feedback-section { padding: 80px 8%; background: var(--light-bg); text-align: center; }
+        .feedback-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        textarea {
+            width: 100%; height: 120px; padding: 15px; border-radius: 15px;
+            border: 1px solid #e2e8f0; margin-bottom: 20px; resize: none; font-family: inherit;
+        }
+
+        .submit-feedback {
+            background: var(--primary); color: white; border: none; padding: 12px 35px;
+            border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+
+        footer { background: var(--dark); color: #94a3b8; text-align: center; padding: 40px; font-size: 0.9rem; }
+
+        @media (max-width: 768px) { .vertical-divider { display: none; } .hero-action-container { flex-direction: column; } }
+
+        /* ================= MOBILE FIX ================= */
+
+@media (max-width: 768px){
+
+/* HEADER */
+header{
+    padding: 10px 15px;
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* NAVBAR STACK */
+nav{
+    width: 100%;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+nav a, .dropdown{
+    margin: 5px 10px 5px 0;
+    font-size: 14px;
+}
+
+/* HERO SECTION */
+.hero{
+    padding: 80px 15px;
+    clip-path: none; /* remove fancy shape (breaks mobile) */
+}
+
+.hero h1{
+    font-size: 24px;
+}
+
+.hero p{
+    font-size: 14px;
+}
+
+/* BUTTON AREA */
+.hero-action-container{
+    flex-direction:column;
+    gap:15px;
+    width:100%;
+    padding:0 10px; /* ✅ prevents edge overflow */
+}
+
+.right-actions{
+    flex-direction:column;
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;              /* ✅ allow wrapping */
+    justify-content:center;
+    width:100%;
+    max-width:100%;              /* ✅ prevent overflow */
+}
+
+.action-btn{
+    padding:10px 20px;
+    border:2px solid rgba(255,255,255,0.7);
+    border-radius:50px;
+    background:rgba(255,255,255,0.1);
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+    max-width:100%;              /* ✅ key fix */
+    box-sizing:border-box;       /* ✅ include padding */
+    text-align:center;
+}
+
+/* REMOVE DIVIDER */
+.vertical-divider{
+    display:none;
+}
+
+/* BENEFITS */
+.benefits-grid{
+    flex-direction: column;
+    align-items: center;
+}
+
+.benefit-card{
+    width: 90%;
+}
+
+/* FEEDBACK */
+.feedback-container{
+    padding:20px;
+}
+
+}
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container" onclick="location.href='Home.html'">
+        <img src="logo.jpeg" alt="Viswam Abacus Logo" class="main-logo">
+    </div>
+
+    <nav>
+        <a href="Home.html">Home  </a>
+        <a href="about-abacus.html">|  Know Abacus  </a>
+        <div class="dropdown">
+            <a href="#">|  Practice With ▾ </a>
+            <div class="dropdown-content">
+                <a href="Practice.html">🧮 Digital Abacus</a>
+                <a href="Practice-Physical.html">🖐️ Physical Abacus</a>
+            </div>
+        </div>
+        <a href="Assesment.html">|  Assessment</a>
+        <a href="results-history.html">|  📊 My Results</a>
+        <a href="index.html" class="logout-btn">|  Logout</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Master Abacus & Math Skills</h1>
+    <p>The ultimate interactive platform to boost your mental calculation speed and memory power.</p>
+   <div class="hero-action-container">
+    <a href="about-abacus.html" class="know-abacus-btn">Know About Abacus →</a>
+    
+    <div class="vertical-divider"></div>
+    
+    <div class="right-actions">
+    
+    <a href="Practice.html" class="action-btn">
+        <span style="margin-right: 3px;">🧮</span> Digital Practice
+    </a>
+    
+    <a href="Practice-Physical.html" class="action-btn">
+        <span style="margin-right: 5px;">🖐️</span> Physical Practice
+    </a>
+    
+    <a href="Assesment.html" class="action-btn">
+        Take Assessment
+    </a>
+
+    <a href="Teacher.html" class="action-btn">
+        <span style="margin-right: 5px;">👨‍🏫</span> Teacher
+    </a>
+
+</div>
+</div>
+</section>
+
+<section class="benefits-section">
+    <h2>Why Learn Abacus?</h2>
+    <div class="benefits-grid">
+        <div class="benefit-card"><span>🧠</span><h4>Mental Focus</h4><p>Enhance concentration and attention span.</p></div>
+        <div class="benefit-card"><span>⚡</span><h4>Fast Calculation</h4><p>Process math faster than a calculator.</p></div>
+        <div class="benefit-card"><span>🖼️</span><h4>Memory Boost</h4><p>Develop a powerful photographic memory.</p></div>
+    </div>
+</section>
+
+<section class="feedback-section">
+  <div class="feedback-container">
+    <h3>We Value Your Feedback</h3>
+    <p>How was your experience? Let us know how we can improve!</p>
+    <form id="feedbackForm">
+      <!-- Subject line (only you see it) -->
+      <input type="hidden" name="_subject" value="Website Feedback">
+
+      <!-- Name -->
+      <input 
+        type="text" 
+        name="name"
+        placeholder="Your Name" 
+        required
+        style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px;"
+      >
+
+      <input 
+        type="text" 
+        name="school_name"
+        placeholder="School Name" 
+        required
+        style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px;"
+      >
+
+      <!-- Area / City -->
+      <input 
+        type="text" 
+        name="area"
+        placeholder="Your Area / City" 
+        required
+        style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px;"
+      >
+
+      <!-- Email (optional, good for replies) -->
+      <input 
+      type="email" 
+      name="email"
+      placeholder="Email (optional)" 
+      style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px;"
+    >
+
+      <!-- Feedback -->
+      <textarea 
+        name="message" 
+        placeholder="Your Feedback" 
+        required
+        style="width: 100%; height: 120px; padding: 15px; border-radius: 15px; border: 1px solid #e2e8f0; margin-bottom: 20px; resize: none; font-family: inherit;"
+      ></textarea>
+      
+      <button class="submit-feedback" type="submit">Send Feedback</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+    <p>© 2026 Viswam Abacus. Empowering minds globally.</p>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+// 🔥 STEP 1: Create client (ONLY ONCE)
+var  supabase = window.supabase.createClient(
+    "https://exaafqucqduekcuiefrb.supabase.co",
+    "sb_publishable_K6LL3m2ive533Z-eyP2vEA_ddZhs-3K"
+);
+
+document.querySelectorAll('.dropdown > a').forEach(item => {
+    item.addEventListener('click', function(e){
+        if(window.innerWidth < 768){
+            e.preventDefault();
+            const menu = this.nextElementSibling;
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+    });
+});
+
+const form = document.getElementById("feedbackForm");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = form.name.value;
+  const school_name = form.school_name.value;
+  const area = form.area.value;
+  const email = form.email.value;
+  const message = form.message.value;
+
+  const { error } = await supabase
+    .from("feedback")
+    .insert([
+      {
+        name,
+        school_name,
+        area,
+        email,
+        message
+      }
+    ]);
+
+  if (error) {
+  console.log("ERROR:", error);
+  alert(error.message);
+ } else {
+    alert("Feedback sent successfully!");
+    form.reset();
+  }
+});
+
+</script>
+
+</body>
+</html>

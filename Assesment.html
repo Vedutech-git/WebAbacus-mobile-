@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo-container" onclick="location.href='Home.html'">
+            <img src="logo.jpeg" alt="Viswam Abacus Logo" class="main-logo">
+        </div>
+    </header>
+
+<div class="container">
+<h1 class="page-title">Digital Abacus</h1>
+
+<!-- TOP CONTROLS (SAME AS PRACTICE + TIMER) -->
+<div class="top-controls">
+
+    <select id="category" onchange="updateLevels(); saveCategory()">
+        <option value="">Category</option>
+        <option value="star">Star Junior</option>
+        <option value="junior">Juniors</option>
+        <option value="senior">Seniors</option>
+    </select>
+
+    <select id="level" onchange="saveLevel()">
+        <option value="">Level</option>
+    </select>
+
+    <button onclick="generateQuestions()">New Set</button>
+
+    <!-- ⏱ TIMER -->
+    <div id="timer">5:00</div>
+
+    <!-- 🏠 HOME -->
+    <button onclick="location.href='Home.html'" class="home-btn">🏠 Home</button>
+
+</div>
+</div>
+
+<div class="main-grid">
+
+<div class="panel abacus-main-panel">
+<div class="panel-title">Assessment Panel</div>
+
+<div class="abacus-and-questions-container">
+
+    <!-- RIGHT : QUESTIONS -->
+    <div class="questions-section">
+
+        <button id="startAssessmentBtn" onclick="startAssessment()" class="start-btn">
+            Start Assessment
+        </button>
+
+        <div id="questions"></div>
+
+        <button id="submitBtn" onclick="submitTest()" class="start-btn" style="display:none;">
+Submit
+</button>
+
+    </div>
+
+    <!-- LEFT : ABACUS -->
+    <div class="abacus-section">
+        <div class="abacus-wrapper">
+            <div class="abacus-board-wrap">
+                <div class="abacus" id="abacus"></div>
+            </div>
+
+            <div class="below-board">
+                <div id="rodValuesRow"></div>
+
+                <div class="abacus-value-box">
+                    Value: <span id="totalValue">0</span>
+                </div>
+
+                <button onclick="clearAbacus()" class="clear">Clear</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+if (!localStorage.getItem("testStarted")) {
+    localStorage.removeItem("resultSaved");
+    localStorage.setItem("testStarted", "true");
+    localStorage.setItem("mode", "assessment");
+}
+</script>
+<script>
+window.TOTAL_TIME = 300;
+</script>
+<script src="js/abacus.js" defer></script>
+<script src="js/generator.js" defer></script>
+<script src="js/timer.js" defer></script>
+<script src="js/ui.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Results</title>
+
+<style>
+body {
+  font-family: Arial;
+  padding: 20px;
+  background:#f5f6fa;
+}
+
+h2{
+  text-align:center;
+}
+
+#resultsBox{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap:15px;
+  margin-top:20px;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.score{
+  font-size:18px;
+  font-weight:bold;
+}
+
+.date{
+  font-size:13px;
+  color:gray;
+}
+
+.home-btn{
+  display:block;
+  margin:auto;
+  margin-top:20px;
+  padding:10px 20px;
+  border:none;
+  background:#4CAF50;
+  color:white;
+  border-radius:6px;
+  cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<h2>📊 My Test Results</h2>
+
+<div id="resultsBox"></div>
+
+<button onclick="location.href='Home.html'" 
+        style="background: #123b73; color: white; border: none; font-weight: bold;" align="center" class="home-btn">
+        🏠 Home
+    </button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+var supabase = window.supabase.createClient(
+  "https://exaafqucqduekcuiefrb.supabase.co",
+  "sb_publishable_K6LL3m2ive533Z-eyP2vEA_ddZhs-3K"
+);
+
+async function loadResults(){
+
+  let student = JSON.parse(localStorage.getItem("student"));
+  console.log("STUDENT:", student);
+
+  if(!student){
+    alert("Login required");
+    window.location.href="index.html";
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("result_logs")
+    .select("*")
+    .eq("username", student.username)   // 🔥 FIXED
+    .order("created_at", { ascending:false });
+
+  console.log("STUDENT:", student);
+  console.log("DATA:", data);
+  console.log("ERROR:", error);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  let box = document.getElementById("resultsBox");
+
+  if (!data || data.length === 0) {
+    box.innerHTML = "<p>No results found</p>";
+    return;
+  }
+
+  data.forEach(item => {
+
+    let div = document.createElement("div");
+    div.className="card";
+
+    div.innerHTML = `
+  <div class="score">Score: ${item.score} / ${item.total}</div>
+
+  <div><b>User:</b> ${item.username}</div>
+  <div><b>Category:</b> ${item.category}</div>
+  <div><b>Level:</b> ${item.level}</div>
+  <div><b>Mode:</b> ${item.mode}</div>
+  <div><b>Test Type:</b> ${item.test_type || "N/A"}</div>
+
+  <div><b>Time Taken:</b> ${
+    item.time_taken != null
+      ? `${Math.floor(item.time_taken / 60)}m ${item.time_taken % 60}s`
+      : "N/A"
+  }</div>
+
+  <div class="date">${new Date(item.created_at).toLocaleString()}</div>
+`;
+
+    box.appendChild(div);
+  });
+}
+
+loadResults();
+
+function goHome(){
+  window.location.href="Home.html";
+}
+</script>
+
+</body>
+</html> 

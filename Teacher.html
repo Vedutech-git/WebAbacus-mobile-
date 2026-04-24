@@ -1,0 +1,104 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment</title>
+
+    <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <header>
+            <div class="logo-container" onclick="location.href='Home.html'">
+                <img src="logo.jpeg" alt="Viswam Abacus Logo" class="main-logo">
+            </div>
+        </header>
+
+    <div class="container">
+    <h1 class="page-title">Digital Abacus</h1>
+
+    <!-- TOP CONTROLS (SAME AS PRACTICE + TIMER) -->
+    <div class="top-controls">
+        <!-- 🏠 HOME -->
+        <button onclick="location.href='Home.html'" class="home-btn">🏠 Home</button>
+
+    </div>
+    </div>
+
+    <div class="main-grid">
+
+    <div class="panel abacus-main-panel">
+    <div class="title">Abacus</div>
+
+    <div class="abacus-and-questions-container">
+
+
+        <div class="Problems">
+                        
+            <div class="title2">Write Your Questions</div>
+            <div>
+                <div class="question-steps-layout">
+
+            <div class="question-panel">
+            <div id="errorBox" class="error-box"></div>
+
+                <textarea id="question_box" class="textbox" placeholder="Enter your question here..."></textarea>
+
+                        <div class="btns">
+                            <button onclick="startSolve()">Show Answer</button>
+                            <button onclick="nextStep()">Next Step</button>
+                            <button onclick="clearQuestion()">Clear</button>
+                        </div>
+
+                        <div class="technique-box">
+                            <span id="techniqueResult">Ready</span>
+                        </div>
+
+                        <div class="answer-box">
+                            Answer: <span id="answerResult">0</span>
+                        </div>
+
+                    </div>
+
+
+                </div> 
+            </div>
+        </div>
+
+        <!-- LEFT : ABACUS -->
+        <div class="abacus-section">
+            <div class="abacus-wrapper">
+
+                <div class="abacus-board-wrap">
+                    <div class="abacus" id="abacus"></div>
+                </div>
+
+                <div class="below-board">
+                    <div class="rod-values-row" id="rodValuesRow"></div>
+
+                    <div class="abacus-value-box">
+                        Value: <span id="totalValue">0</span>
+                    </div>
+
+                    <button onclick="clearAbacus()" class="clear-btn">Clear</button>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="steps-panel" id="stepList"></div>
+
+    </div> 
+            </div>
+        </div>
+    </div>
+    </div>
+
+    </div>
+
+    <script src="js/Teacherabacus.js"></script>
+    </body>
+    </html>

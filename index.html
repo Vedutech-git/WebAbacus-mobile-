@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Digital Abacus Login</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+
+    background-image:
+        linear-gradient(rgba(15,32,39,0.85), rgba(44,83,100,0.85)),
+        url('kid.jpeg');
+
+    background-size: cover, cover;   /* ✅ EXACT MATCH (2 layers) */
+    background-position: center, center;
+    background-repeat: no-repeat, no-repeat;
+    background-attachment: scroll, scroll; /* 🔥 mobile fix */
+
+    overflow:auto;
+    padding:80px 20px 20px;
+}
+
+/* LOGO */
+.logo{
+    position:fixed; /* 🔥 change from absolute */
+    top:10px;
+    left:10px;
+    z-index:1000;
+}
+
+.logo img{
+    height:50px;
+}
+
+/* Floating circles */
+body::before, body::after{
+    content:'';
+    z-index:-1;
+    position:absolute;
+    width:300px;
+    height:300px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.1);
+    animation: float 8s infinite ease-in-out;
+}
+
+body::before{
+    top:-80px;
+    left:-80px;
+}
+
+body::after{
+    bottom:-100px;
+    right:-100px;
+    animation-delay:3s;
+}
+
+@keyframes float{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(40px);}
+}
+
+/* Layout */
+.wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:100%;
+    max-width:400px;
+}
+
+/* Login Card */
+.login-container{
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(15px);
+    border-radius:20px;
+    padding:30px 20px;
+    width:100%;
+    max-width:350px;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+}
+
+h2{
+    color:white;
+    margin-bottom:20px;
+    font-weight:600;
+    font-size:18px;
+}
+
+/* Input */
+.input-group{
+    position:relative;
+    margin-bottom:18px;
+}
+
+.input-group input{
+    width:100%;
+    padding:12px 40px;
+    border:none;
+    border-radius:10px;
+    outline:none;
+    font-size:14px;
+    background:rgba(255,255,255,0.95);
+}
+
+/* Icons */
+.input-group i{
+    position:absolute;
+    top:50%;
+    left:12px;
+    transform:translateY(-50%);
+    color:#555;
+}
+
+/* Button */
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    font-size:15px;
+    color:white;
+    cursor:pointer;
+    background: linear-gradient(90deg,#ff7eb3,#ff758c,#ff7eb3);
+}
+
+/* Message */
+#message{
+    margin-top:10px;
+    color:#ff4d4d;
+    font-size:13px;
+}
+
+/* Footer */
+.footer{
+    margin-top:12px;
+    font-size:11px;
+    color:#eee;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width:480px){
+
+.logo img{
+    height:40px;
+}
+
+.login-container{
+    padding:25px 15px;
+}
+
+h2{
+    font-size:16px;
+}
+
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- LOGO -->
+<div class="logo">
+    <img src="logo.jpeg" alt="Company Logo">
+</div>
+
+<div class="wrapper">
+
+    <!-- COMPANY SIDE -->
+    
+
+    <!-- LOGIN SIDE -->
+    <div class="login-container">
+  <h2 style="margin-top:0; font-size:20px; font-weight:700; color:#fffdfd; margin-bottom:7px;">
+    Welcome! to Viswam Digital Abacus
+  </h2>
+  
+
+  <div class="input-group">
+    <i class="fa fa-user"></i>
+    <input type="text" id="username" placeholder="Username">
+  </div>
+
+  <div class="input-group">
+    <i class="fa fa-lock"></i>
+    <input type="password" id="password" placeholder="Password">
+  </div>
+
+  <button id="loginBtn">Login</button>
+  <p id="message"></p>
+  <div class="footer">© 2026 Viswam Abacus</div>
+</div>
+
+<!-- ✅ SUPABASE CDN (MUST BE FIRST) -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<script>
+// 🔥 STEP 1: Create client (ONLY ONCE)
+var  supabase = window.supabase.createClient(
+    "https://exaafqucqduekcuiefrb.supabase.co",
+    "sb_publishable_K6LL3m2ive533Z-eyP2vEA_ddZhs-3K"
+);
+
+// 🔥 STEP 2: Wait for page load
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("JS Loaded");
+
+    const btn = document.getElementById("loginBtn");
+
+    if (!btn) {
+        console.error("Login button not found");
+        return;
+    }
+
+    btn.addEventListener("click", validateLogin);
+});
+
+// 🔥 STEP 3: LOGIN FUNCTION
+async function validateLogin() {
+    console.log("Login clicked");
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const message = document.getElementById('message');
+
+    if (!username || !password) {
+        message.textContent = "Enter username and password!";
+        return;
+    }
+
+    try {
+        // 🔥 STEP 4: Fetch user from Supabase
+        const { data, error } = await supabase
+            .from('Abacus')   // ⚠️ your table name
+            .select('*')
+            .eq('username', username);
+
+        console.log("DATA:", data);
+        console.log("ERROR:", error);
+
+        if (error) {
+            message.textContent = "DB Error: " + error.message;
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            message.textContent = "User not found!";
+            return;
+        }
+
+        // 🔥 STEP 5: Password check
+        if (data[0].password_hash !== password) {
+    message.textContent = "Wrong password!";
+    return;
+}
+
+// ✅ SAVE USER HERE
+localStorage.setItem("student", JSON.stringify({
+    id: data[0].id,
+    username: data[0].username
+}));
+
+// update last login
+await supabase
+    .from('Abacus')
+    .update({
+        last_login: new Date().toISOString()
+    })
+    .eq('username', username);
+
+// redirect
+setTimeout(() => {
+    window.location.href = "Home.html";
+}, 1000);
+
+    } catch (err) {
+        console.error("Unexpected error:", err);
+        message.textContent = "Something went wrong!";
+    }
+}
+console.log("Last login:", data[0].last_login);
+</script>
+
+</body>
+</html>

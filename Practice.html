@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abacus</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo-container" onclick="location.href='Home.html'">
+            <img src="logo.jpeg" alt="Viswam Abacus Logo" class="main-logo">
+        </div>
+    </header>
+
+<div class="container">
+<h1 class="page-title">Digital Abacus</h1>
+  <div class="top-controls">
+    <select id="category" onchange="updateLevels(); saveCategory()"">
+      <option value="">Category</option>
+      <option value="star">Star Junior</option>
+      <option value="junior">Juniors</option>
+      <option value="senior">Seniors</option>
+    </select>
+    <select id="level" onchange="saveLevel()">
+      <option value="">Level</option>
+    </select>
+    <button onclick="generateQuestions()">New Set</button>
+    <button onclick="location.href='Home.html'" class="home-btn">🏠 Home</button>
+  </div>
+</div>
+
+<div class="main-grid">
+  <!-- SINGLE PANEL CONTAINING BOTH ABACUS AND QUESTIONS SIDE BY SIDE -->
+  <div class="panel abacus-main-panel">
+    <div class="panel-title">Interactive Soroban</div>
+    
+    <!-- ABACUS SECTION - UNCHANGED -->
+    <div class="abacus-and-questions-container">
+
+      <!-- Right: Questions (same as before) -->
+      <div class="questions-section">
+
+        <button id="startPracticeBtn" onclick="startPractice()" class="start-btn">
+            Start Practice
+        </button>
+
+        
+        <div id="questions" class="no-border"></div>
+      </div>
+      
+      <!-- Left: Abacus (exactly same as before) -->
+      <div class="abacus-section">
+        <div class="abacus-wrapper">
+          <div class="abacus-board-wrap">
+            <div class="abacus" id="abacus"></div>
+          </div>
+          <div class="below-board">
+            <div class="rod-values-row" id="rodValuesRow"></div>
+            <div class="abacus-value-box">
+              Value: <span id="totalValue">0</span>
+            </div>
+            <button onclick="clearAbacus()" class="clear">Clear</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/abacus.js" defer></script>
+<script src="js/generator.js" defer></script>
+<script src="js/ui.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,564 @@
+/* ================= RESET ================= */
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --panel-bg:#f7f9fd;
+  --border:#ddd;
+  --wood:#5c3311;
+  --dark:#123b73;
+}
+
+body{
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f5f6fa;
+  color:#123b73;
+  min-height:100vh;
+}
+
+/* ================= HEADER ================= */
+header{
+  background:var(--dark);
+  padding:10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.main-logo{
+  max-height:40px;
+  border-radius:5px;
+}
+
+/* ================= CONTAINER ================= */
+.container{
+  padding:10px;
+}
+
+/* ================= TITLE ================= */
+.page-title{
+  text-align:center;
+  font-size:20px;
+  margin-bottom:10px;
+}
+
+/* ================= CONTROLS ================= */
+.top-controls{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:10px;
+  background:var(--panel-bg);
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+}
+
+.top-controls select,
+.top-controls button{
+  width:100%;
+  padding:10px;
+  font-size:16px;
+}
+
+.home-btn{
+  background:#1e293b;
+  color:white;
+}
+
+/* ================= MAIN LAYOUT ================= */
+.main-grid{
+  display:flex;
+  flex-direction:column;
+  gap:10px;  
+}
+
+/* ================= PANEL ================= */
+.panel{
+  background:var(--panel-bg);
+  border-radius:12px;
+  padding:10px;
+  border:1px solid var(--border);
+}
+
+.panel-title{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+/* ================= QUESTIONS ================= */
+.questions-section{
+  width:100%;
+  align-self: center;
+  align-content: justify-center;
+}
+
+#questions{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap:12px;
+}
+.problem{
+  padding:10px;
+  border-radius:8px;
+  background:#fff;
+  border:1px solid #ddd;
+}
+
+.q-row{
+  display:grid;
+  grid-template-columns:60px 1fr;
+}
+
+.q-left{
+  font-size:12px;
+  font-weight:bold;
+}
+
+.q-right{
+  text-align:right;
+  font-size:16px;
+}
+
+/* ================= BUTTON ================= */
+button{
+  border:none;
+  border-radius:6px;
+  background:#123b73;
+  color:white;
+  cursor:pointer;
+}
+
+/* ================= ABACUS ================= */
+.abacus-section{
+  width:100%;
+}
+
+.abacus-wrapper{
+  overflow-x:auto;
+  text-align:center;
+}
+
+.abacus-wrapper::after{
+  content:"⬅️ Swipe to move ➡️";
+  font-size:12px;
+  color:#666;
+  display:block;
+  margin-top:5px;
+}
+
+/* BOARD */
+.abacus-board-wrap {
+  width: 100%;
+  max-width: none;   /* original size limit */
+  aspect-ratio: 690 / 260;
+  background:#8f5d2b;
+  border:6px solid #734515;
+  border-radius:15px;
+  display:flex;
+  align-items:center;
+}
+
+/* GRID */
+.abacus{
+  display:grid;
+  grid-template-columns:repeat(13,1fr);
+  width:100%;
+  height:100%;
+}
+
+/* RODS */
+.rod{
+  position:relative;
+  height:100%;
+}
+
+/* ROD LINE */
+.rod-line{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  width:4px;
+  height:100%;
+  background:var(--wood);
+}
+
+/* BAR */
+.unit-bar{
+  position:absolute;
+  top:52px;
+  width:100%;
+  height:5px;
+  background:var(--wood);
+}
+
+/* DOT */
+.unit-dot{
+  position:absolute;
+  top:50px;
+  left:50%;
+  transform:translateX(-50%);
+  width:6px;
+  height:6px;
+  background:#fff;
+  border-radius:50%;
+  z-index: 5;
+}
+
+/* BEADS */
+.bead{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  width: 70%;
+  height: 12px;   /* 🔥 responsive */
+  border-radius: 50px;
+  cursor:pointer;
+  z-index:5;
+}
+
+.upper-bead{ background:#ff9966; }
+.earth-bead{ background:#4da6ff; }
+
+/* ================= VALUES ================= */
+.below-board{
+  text-align:center;
+  margin-top:5px;
+}
+
+#rodValuesRow{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:5px;
+}
+
+#rodValuesRow{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:7px;
+  gap:20px;
+}
+
+.abacus-value-box{
+  margin-top:5px;
+  padding:6px;
+  background:#dbe6f3;
+  border-radius:8px;
+  font-size:16px;
+}
+
+.clear{
+ background:#1e293b;
+  color:white;
+  padding:15px 25px;
+  border-radius:50px;
+  font-size:16px;
+  border:2px solid rgba(255,255,255,0.7);
+  transition:0.3s;
+}
+
+/* ================= TIMER ================= */
+#timer{
+  font-size:18px;
+  font-weight:bold;
+  color:red;
+  text-align:center;
+}
+
+/* ================= SCROLL ================= */
+.questions-section::-webkit-scrollbar{
+  width:6px;
+}
+
+.questions-section::-webkit-scrollbar-thumb{
+  background:#bbb;
+  border-radius:6px;
+}
+
+/* ================= DESKTOP ================= */
+@media(min-width:900px){
+
+
+
+/* LAYOUT SPLIT */
+.main-grid{
+  flex-direction:row;
+  align-items:flex-start;
+}
+
+/* LEFT QUESTIONS */
+.questions-section{
+    align-content: center;
+  width:50%;
+  height: 500px;
+  max-height:600px;
+  overflow-y:auto;
+  gap: 10px;
+}
+
+/* RIGHT ABACUS */
+.abacus-section{
+  width:50%;
+}
+
+/* CONTROLS INLINE */
+.top-controls{
+  flex-direction:row;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.top-controls select,
+.top-controls button{
+  width:auto;
+}
+
+/* BIGGER BEADS */
+.bead{
+  height:24px;
+}
+
+/* VALUE TEXT */
+.abacus-value-box{
+  font-size:18px;
+}
+
+}
+
+.start-btn{
+  background:#1e293b;
+  color:white;
+  border-radius:50px;
+  font-size:14px;
+  border:2px solid rgba(255,255,255,0.7);
+  transition:0.3s;
+  padding:5px 5px;
+  margin-bottom:10px; /* add spacing instead */
+}
+.clear-btn{
+  font-size: 12px;   /* increase this as needed */
+  padding: 10px 20px;
+}
+
+#question_box{
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 450px;
+  height:100px;
+  padding:10px;
+  font-size:16px;
+  border-radius:8px;
+  border:1px solid #ddd;
+  text-align: right;
+}
+
+.btns {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  gap: 10px;
+}
+
+.btns button {
+  padding: 3px 9px;
+  border-radius: 8px;
+  font-size: 14px;
+  border: none;
+  background: #123b73;
+  color: white;
+  cursor: pointer;
+  flex: 1; /* makes buttons equal width */
+}
+
+.abacus-and-questions-container {
+  display: flex;
+  justify-content: center; /* 🔥 THIS centers everything */
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap; /* prevents breaking on small screens */
+}
+
+.Problems {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 🔥 centers children */
+  gap: 20px;
+}
+
+.question-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 🔥 centers everything inside */
+  gap: 20px;
+}
+
+.next-btn{
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 20px;
+  background: #123b73;
+  color: white;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* hover effect */
+.next-btn:hover{
+  background: #0d2c55;
+  transform: scale(1.05);
+}
+
+@media (orientation: portrait){
+
+  .main-grid{
+    flex-direction:column;
+  }
+
+  .questions-section,
+  .abacus-section{
+    width:100%;
+  }
+
+}
+
+  .panel{
+    max-width: 100%;
+    padding:10px;
+  }
+
+  #questions{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:10px;
+  }
+
+  .problem{
+    padding:8px;
+  }
+
+body{
+  overflow-x:hidden;
+}
+
+.problem{
+  width:100%;
+  min-width:0;
+}
+
+/* ================= FINAL FIX (DO NOT TOUCH ABOVE CODE) ================= */
+
+/* Remove weird spacing */
+.main-grid{
+  gap:8px !important;
+}
+
+/* PREVENT SIDE SCROLL */
+body{
+  overflow-x:hidden !important;
+}
+
+.problem{
+  width:100% !important;
+  min-width:0 !important;
+}
+
+/* ================= RESPONSIVE MODE ADD-ON (SAFE LAYER) ================= */
+
+/* 📱 PORTRAIT MODE */
+@media (orientation: portrait) {
+
+  .main-grid {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .questions-section,
+  .abacus-section {
+    width: 100% !important;
+  }
+
+  .abacus-board-wrap {
+    aspect-ratio: 690 / 260;
+    height: auto;
+  }
+
+}
+
+
+/* 🧠 SAFETY FIX (prevents sideways scroll issues) */
+body {
+  overflow-x: hidden !important;
+}
+
+/* ================= CLEAN LANDSCAPE ONLY ================= */
+@media (orientation: landscape) and (max-width: 900px) {
+
+  .main-grid {
+    flex-direction: column !important;
+    height: 100vh;
+  }
+
+  .abacus-and-questions-container {
+    flex-wrap: nowrap !important;
+    width: 100%;
+  }
+
+  .questions-section {
+    width: 45% !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+  }
+
+  .abacus-section {
+    width: 55% !important;
+    height: 75vh !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .abacus-board-wrap {
+    height: 35vh !important;
+    width: 100% !important;
+    max-width: none !important;
+    aspect-ratio: auto !important;
+  }
+
+  .unit-bar{
+  position:absolute;
+  top:32px;
+  width:100%;
+  height:5px;
+  background:var(--wood);
+}
+  .unit-dot{
+  position:absolute;
+  top:32px;
+  left:50%;
+  transform:translateX(-50%);
+  width:6px;
+  height:6px;
+  background:#fff;
+  border-radius:50%;
+  z-index: 5;
+}
+
+
+  #questions {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}

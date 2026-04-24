@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Result Sheet</title>
+
+<style>
+body {
+text-align:center;
+}
+
+header {
+    background: var(--dark);
+    color: white;
+    padding: 0.5rem 8%; /* Reduced padding for a slim header */
+    display: flex;
+    justify-content: space-between; /* Logo left, Nav right */
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+    height: 70px; /* Fixed height stops the logo from expanding the header */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.logo-container {
+    height: 100%; /* Stays within the 70px header */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.main-logo {
+    max-height: 50px; /* This is the "Magic Limit" - stops it from being huge */
+    width: auto;      /* Maintains aspect ratio */
+    display: block;
+    object-fit: contain;
+    border-radius: 5px; /* Optional: rounds the corners of your JPEG */
+}
+
+.home-container{
+display:flex;
+justify-content:center;
+margin-top:30px;
+}
+
+.home-btn{
+padding:10px 20px;
+font-size:16px;
+border:none;
+border-radius:8px;
+background:#4CAF50;
+color:white;
+cursor:pointer;
+}
+
+.home-btn:hover{
+background:#45a049;
+}
+
+#resultBox{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap:15px;
+  padding:10px;
+}
+
+.problem{
+  display:flex;
+  flex-direction:column;   /* 🔥 stack vertically */
+  gap:6px;
+
+  background:#fff;
+  padding:12px;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+
+  height:auto;             /* 🔥 remove fixed height */
+}
+
+/* LEFT SIDE */
+.q-left{
+width:35px;
+min-width:35px;
+font-weight:bold;
+text-align:left;
+}
+
+/* RIGHT SIDE */
+.q-content{
+flex:1;
+text-align:right;
+}
+
+/* NUMBERS */
+.q-right{
+font-size:16px;
+line-height:1.5;
+}
+
+/* ANSWERS */
+.answer{
+margin-top:4px;
+padding:6px 8px;
+border-radius:6px;
+font-size:14px;
+}
+
+.user{ background:#fff4cc; }
+.correct{ background:#d9f7d9; }
+.wrong{ background:#ffd6d6; }
+
+@media(max-width:600px){
+
+  #resultBox{
+    grid-template-columns: 1fr;  /* single column */
+  }
+
+  .problem{
+    padding:10px;
+  }
+
+  .q-right{
+    font-size:15px;
+  }
+
+}
+.correct{
+  background:#d9f7d9;
+  color:#1a7f37;
+}
+
+.wrong{
+  background:#ffd6d6;
+  color:#a30000;
+}
+</style>
+
+</head>
+<body>
+    <header>
+        <div class="logo-container" onclick="location.href='Home.html'">
+            <img src="logo.jpeg" alt="Viswam Abacus Logo" class="main-logo">
+        </div>
+    </header>
+
+<h2 style="text-align:center;">Result Sheet</h2>
+
+<div class="home-container">
+  <button class="home-btn" onclick="goHome()">🏠 Home</button>
+</div>
+
+<div id="resultBox"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+// 🔥 STEP 1: Create client (ONLY ONCE)
+var  supabase = window.supabase.createClient(
+    "https://exaafqucqduekcuiefrb.supabase.co",
+    "sb_publishable_K6LL3m2ive533Z-eyP2vEA_ddZhs-3K"
+);
+
+let problems = JSON.parse(localStorage.getItem("problems")) || [];
+let answers = JSON.parse(localStorage.getItem("answers")) || [];
+let userAnswers = JSON.parse(localStorage.getItem("userAnswers")) || [];
+
+let box = document.getElementById("resultBox");
+
+for(let i=0;i<25;i++){
+
+let p = problems[i];
+
+let card = document.createElement("div");
+card.className="problem";
+
+/* LEFT */
+let left = document.createElement("div");
+left.className="q-left";
+left.innerText = "Question_" + (i+1);
+
+/* RIGHT WRAP */
+let rightWrap = document.createElement("div");
+rightWrap.className="q-content";
+
+/* NUMBERS */
+let nums = document.createElement("div");
+nums.className="q-right";
+
+/* DISPLAY QUESTIONS */
+
+if(p.type === "mul"){
+
+nums.innerHTML = `
+<div>${p.numbers[0]} × ${p.numbers[1]}</div>`;
+
+}
+
+else if(p.type === "divi"){
+
+nums.innerHTML = `
+<div>${p.numbers[0]} ÷ ${p.numbers[1]}</div>`;
+
+}
+
+else if(p.type === "bodmas"){
+
+nums.innerHTML = `
+<div>(${p.numbers[0]} ${p.ops[0]} ${p.numbers[1]}) ${p.ops[1]} ${p.numbers[2]}</div>
+`;
+
+}
+
+else if(p.type === "sqrt"){
+
+nums.innerHTML = `
+<div>√ ${p.numbers[0]}</div>
+`;
+
+}
+
+else if(p.type === "percent"){
+
+nums.innerHTML = `
+<div>${p.numbers[0]} % of ${p.numbers[1]}</div>
+`;
+
+}
+
+else if(p.type === "decimal" || p.type === "decimalmul" || p.type === "decimaldivi"){
+
+let html = `<div>${p.numbers[0]}</div>`;
+for(let j=0;j<p.ops.length;j++){
+html += `<div>${p.ops[j]} ${p.numbers[j+1]}</div>`;
+}
+nums.innerHTML = html;
+
+}
+
+else{
+
+/* DEFAULT ROW QUESTIONS (Direct, 5's, 10's, Mix, Random) */
+
+let html = `<div>${p.numbers[0]}</div>`;
+for(let j=0;j<p.ops.length;j++){
+html += `<div>${p.ops[j]} ${p.numbers[j+1]}</div>`;
+}
+
+nums.innerHTML = html;
+
+}
+
+/* ANSWERS */
+let ua = document.createElement("div");
+ua.className="answer user";
+ua.innerText = "Your: " + (userAnswers[i] ?? "");
+
+let ca = document.createElement("div");
+ca.className="answer correct";
+ca.innerText = "Ans: " + answers[i];
+
+let res = document.createElement("div");
+res.className="answer";
+
+if(Number(userAnswers[i]) === answers[i]){
+res.innerText="✔";
+res.classList.add("correct");
+}else{
+res.innerText="✘";
+res.classList.add("wrong");
+}
+
+
+/* APPEND RIGHT */
+rightWrap.appendChild(nums);
+rightWrap.appendChild(ua);
+rightWrap.appendChild(ca);
+rightWrap.appendChild(res);
+
+/* APPEND CARD */
+card.appendChild(left);
+card.appendChild(rightWrap);
+
+box.appendChild(card);
+}
+
+let mode = localStorage.getItem("mode") || "unknown";
+
+let modeDisplay = document.createElement("h3");
+
+if(mode === "assessment"){
+    modeDisplay.innerText = "Mode: Assessment Test";
+    modeDisplay.style.color = "red";
+}
+else if(mode === "practice"){
+    modeDisplay.innerText = "Mode: Practice Session";
+    modeDisplay.style.color = "green";
+}
+else if(mode === "physical-practice"){
+    modeDisplay.innerText = "Mode: Physical Practice";
+    modeDisplay.style.color = "blue";
+}
+else {
+    modeDisplay.innerText = "Mode: Unknown";
+}
+
+document.body.insertBefore(modeDisplay, document.getElementById("resultBox"));
+
+let score = localStorage.getItem("score") || 0;
+
+let scoreDisplay = document.createElement("h2");
+scoreDisplay.innerText = "Total Marks: " + score + " / " + answers.length;
+
+document.body.insertBefore(scoreDisplay, document.getElementById("resultBox"));
+
+let category = localStorage.getItem("category") || "N/A";
+let level = localStorage.getItem("level") || "N/A";
+
+let metaDisplay = document.createElement("h3");
+metaDisplay.innerText = `Category: ${category} | Level: ${level}`;
+
+document.body.insertBefore(metaDisplay, document.getElementById("resultBox"));
+
+if(mode === "assessment"){
+
+    let timeTaken = Number(localStorage.getItem("timeTaken")) || 0;
+
+    let minutes = Math.floor(timeTaken / 60);
+    let seconds = timeTaken % 60;
+
+    let timeDisplay = document.createElement("h3");
+    timeDisplay.innerText = `Time Taken: ${minutes}m ${seconds}s`;
+
+    document.body.insertBefore(timeDisplay, document.getElementById("resultBox"));
+}
+
+
+function goHome(){
+  localStorage.removeItem("problems");
+localStorage.removeItem("answers");
+localStorage.removeItem("userAnswers");
+localStorage.removeItem("score");
+localStorage.removeItem("resultSaved");
+  window.location.href = "Home.html";
+}
+
+async function saveResultToDatabase() {
+
+  let student = JSON.parse(localStorage.getItem("student"));
+
+  if (!student) {
+    console.log("No student found");
+    return;
+  }
+
+  let mode = localStorage.getItem("mode") || "unknown";
+  let category = localStorage.getItem("category") || "N/A";
+  let level = localStorage.getItem("level") || "N/A";
+
+  let score = Number(localStorage.getItem("score")) || 0;
+  let total = answers.length;
+
+  let timeTaken = Number(localStorage.getItem("timeTaken")) || 0;
+
+  const payload = {
+    student_id: student.id,
+    username: student.username,
+
+    mode,
+    category,
+    level,
+
+    score,
+    total,
+
+    time_taken: mode === "assessment" ? timeTaken : null,
+
+    created_at: new Date().toISOString()
+  };
+
+  const { error } = await supabase
+    .from("result_logs")
+    .insert([payload]);
+
+  if (error) {
+    console.log("ERROR:", error);
+  } else {
+    console.log("Result saved successfully");
+  }
+}
+
+saveResultToDatabase();
+
+</script>
+
+</body>
+</html>
