@@ -14,7 +14,7 @@ const states=[];
 
 function rodValue(s){
 return (s.h?5:0)+s.e;
-}
+}   
 const errorBox = document.getElementById("errorBox")
 
 function showError(msg){
@@ -371,14 +371,22 @@ return `10^${place}`
 function nextStep(){
 
     // 🔥 IF FINISHED → NEXT CLICK CLEARS EVERYTHING
-if(stepIndex >= steps.length && steps.length > 0){
-    clearQuestion()
+if(stepIndex === steps.length && steps.length > 0){
+
+    techniqueBox.innerText = "Finished"
+
+    let ans = calculateExpression()
+    if(ans !== null){
+        answerBox.innerText = ans
+    }
+
+    stepIndex++  // prevent repeat
     return
 }
 
 // 🔥 PREPARE ONLY ONCE
 if (!isPrepared) {
-    startSolve();
+    startSolve(false);  // 🔥 pass flag
     isPrepared = true;
 }
 
@@ -444,17 +452,13 @@ setRodValue(step.rod,result)
 }
 
 stepIndex++
-if(stepIndex>=steps.length){
-
-    techniqueBox.innerText = "Finished"
-
-    // ⏳ small delay so user can see final result
-    // 🔥 RESET IMMEDIATELY
-isPrepared = false;
-
+if(stepIndex > steps.length){
+    clearQuestion()
+    return
 }
 
 }
+
 
 function clearQuestion(){
 
@@ -481,108 +485,55 @@ function clearQuestion(){
 clearError()
 
 
-function startSolve(){
-steps = []
-stepIndex = 0
-stepList.innerHTML = ""
-let rawText = normalizeInput(questionBox.value)
+function startSolve(showAnswer = true){
 
-/* 🚀 HANDLE MULTIPLICATION & DIVISION ONLY */
-if(rawText.includes("*") || rawText.includes("/")){
+    steps = []
+    stepIndex = 0
+    stepList.innerHTML = ""
 
-    stepList.innerHTML = ""   // clear steps
-    clearAbacus()             // reset abacus
+    let rawText = normalizeInput(questionBox.value)
 
-    let tokens = rawText.match(/(\d+|[\*\/])/g)
+    // ❌ REMOVE auto-answer from here
 
-    if(!tokens){
-        showError("Invalid question format")
+    if(showAnswer){
+        let ans = calculateExpression()
+        if(ans !== null){
+            answerBox.innerText = ans
+        }
+    }
+
+    clearAbacus()
+
+    let q = parseQuestion()
+    if(!q){
+        alert("Invalid Question")
         return
     }
 
-    
-    let a = parseInt(tokens[0])
-    let op = tokens[1]
-    let b = parseInt(tokens[2])
+    let tempStates = new Array(RODS).fill(0)
 
-    if(op === "*"){
+    generateLoadSteps(q.start, tempStates)
 
-        let result = a * b
+    let runningValue = parseInt(q.start)
 
-        answerBox.innerText = result
-        techniqueBox.innerText = "Multiplication"
+    q.operations.forEach(opObj => {
 
-    }
-
-    else if(op === "/"){
-
-        if(b === 0){
-           showError("Cannot divide by zero")
-return
+        let temp = {
+            a: runningValue.toString(),
+            b: opObj.num,
+            op: opObj.op
         }
 
-        let quotient = Math.floor(a / b)
-        let remainder = a % b
+        generateStepsForPair(temp, tempStates)
 
-        answerBox.innerText = `Q-${quotient} & R-${remainder}`
-        techniqueBox.innerText = "Division"
+        if(opObj.op=="+")
+            runningValue += parseInt(opObj.num)
+        else
+            runningValue -= parseInt(opObj.num)
 
-    }
+    })
 
-    return   // 🚨 STOP normal flow
-}
-let ans = calculateExpression()
-
-if(ans!==null){
-answerBox.innerText = ans
-}
-
-clearAbacus()
-
-let q=parseQuestion()
-
-if(!q){
-alert("Invalid Question")
-return
-}
-
-/* reset */
-
-steps=[]
-stepIndex=0
-stepList.innerHTML=""
-
-/* ✅ CREATE TEMP STATE */
-let tempStates = new Array(RODS).fill(0)
-
-/* ✅ FIRST → load first number */
-generateLoadSteps(q.start, tempStates)
-
-/* running value */
-
-let runningValue = parseInt(q.start)
-
-/* THEN operations */
-
-q.operations.forEach(opObj=>{
-
-let temp={
-a:runningValue.toString(),
-b:opObj.num,
-op:opObj.op
-}
-
-/* ✅ PASS TEMP STATE */
-generateStepsForPair(temp, tempStates)
-
-if(opObj.op=="+")
-runningValue += parseInt(opObj.num)
-else
-runningValue -= parseInt(opObj.num)
-
-})
-
-techniqueBox.innerText="Ready"
+    techniqueBox.innerText = "Ready"
 }
 
 techniqueBox.innerText="Ready"
